@@ -1,30 +1,36 @@
-name: github pages
+# .github/workflows/deploy_hugo_site.yml
+name: Deploy Hugo Site
 
 on:
   push:
     branches:
-      - main  # Set a branch to deploy
+    - master
 
 jobs:
   deploy:
+
+    # build agent
     runs-on: ubuntu-18.04
     steps:
-      - uses: actions/checkout@v2
-        with:
-          submodules: true  # Fetch Hugo themes (true OR recursive)
-          fetch-depth: 0    # Fetch all history for .GitInfo and .Lastmod
+    - uses: actions/checkout@v2
 
-      - name: Setup Hugo
-        uses: peaceiris/actions-hugo@v2
-        with:
-          hugo-version: '0.79.1'
-          # extended: true
+    # install / setup hugo
+    # https://github.com/peaceiris/actions-hugo
+    - name: Setup Hugo
+      uses: peaceiris/actions-hugo@v2
+      with:
+        hugo-version: '0.68.3'
 
-      - name: Build
-        run: hugo --minify
+    # build site
+    - name: Build
+      run: hugo --minify
 
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./public
+    # deploy to destination repo
+    # https://github.com/peaceiris/actions-gh-pages
+    - name: Deploy
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
+        external_repository: username/destination-repo
+        publish_branch: master
+        publish_dir: ./public
