@@ -1,4 +1,3 @@
-# .github/workflows/deploy_hugo_site.yml
 name: Deploy Hugo Site
 
 on:
